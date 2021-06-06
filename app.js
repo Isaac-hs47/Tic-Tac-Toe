@@ -4,6 +4,7 @@ class Template{
         this.player = false;
         this.winner = false;
         this.full = false;
+        this.row_winner = {};
     }
 
     mark_cell( cell ){
@@ -61,10 +62,10 @@ class Template{
                 count++;
             }
         }
-       
+        
         this.winner = count === 3;
         if (this.winner) { 
-            
+            this.row_winner = {orientation: "horizontal", row: row, column: undefined};
             return true;
         }
         
@@ -78,16 +79,23 @@ class Template{
                 }               
         }
         
-        
-        
         this.winner = count === 3;
-        if (this.winner) return true;
+        if (this.winner) {
+            this.row_winner = {orientation: "vertical", row: undefined, column: column};
+            return true
+        };
           
         this.winner = this.verify_diagonals(turn, true);
-        if(this.winner) return true;
+        if(this.winner) {
+            this.row_winner = {orientation: "First-diagonal", row: undefined, column: undefined};
+            return true
+        };
 
         this.winner = this.verify_diagonals(turn, false);
-        if(this.winner) return true;
+        if(this.winner) {
+            this.row_winner = {orientation: "Second-diagonal", row: undefined, column: undefined };
+            return true
+        };
         
         return false;
     }
@@ -152,6 +160,9 @@ class Template{
         }
         this.template = x;
     }
+    get_row_winner(){
+        return this.row_winner;
+    }
 
 }
 
@@ -186,6 +197,7 @@ document.addEventListener("click", (e) => {
                 console.log(full);
                 if(template.get_winner()) {
                     winner = true;
+                    painting_cells(template.get_row_winner());
                     $BTN_RESET.disabled = false;
                     $CONTAINER_WINNER.classList.add("alert-success");
                     $CONTAINER_WINNER.innerHTML = `<strong>WINNER!!!</strong><span> El ganador es "${template.get_player_value()}"</span>`;
@@ -205,6 +217,7 @@ document.addEventListener("click", (e) => {
 
     if(e.target.matches("#btn-reset")){
         document.querySelectorAll(".game-item").forEach(item => {
+            item.classList.remove("border-success");
             item.innerText = null;
         });
         template.reset_template();
@@ -220,62 +233,46 @@ document.addEventListener("click", (e) => {
     }
 });
 
+function painting_cells(row_winner = {}){
+    const $ITEMS = document.querySelectorAll(".game-item");
+  
+    switch(row_winner.orientation){
+        case "horizontal":
+            if(row_winner.row === 0){
+                for (let i = 0; i < 3; i++) {
+                    $ITEMS[i].classList.add("border-success");                    
+                }
+            }else if(row_winner.row === 1){
+                for (let i = 3; i < 6; i++) {
+                    $ITEMS[i].classList.add("border-success");                    
+                }
+            }else{
+                for (let i = 6; i < 9; i++) {
+                    $ITEMS[i].classList.add("border-success");                    
+                }
+            }
+            break;
+        case "vertical":
 
-//     public static void main(String[] args) {
-//         Scanner input = new Scanner(System.in);
-//         Plantilla template = new Plantilla();
-        
-//         int cell;
-//         boolean winner = false, full = false;
-//         System.out.println("BIENVENIDO!");
-        
-//         while(!winner && !full){
-            
-//             show_template(template.get_template());
-            
-//             System.out.println("INGRESE UN NÚMERO ENTRE 1-9 PARA ELEGIR UNA CASILLA!");
-//             cell = input.nextInt();
-            
-//             template.mark_cell(cell);
-            
-//             winner = template.get_winner();
-//             full = template.is_full();
-//         }
-        
-//         if(winner){
-//             show_template(template.get_template());
-//             System.out.println("***************************************");
-//             System.out.println("***********YA HAY UN GANADOR!**********");
-//             System.out.println("***************************************");
-//         }
-//         else if(full){
-//             System.out.println("***************************************");
-//             System.out.println("*************HAY UN EMPATE!************");
-//             System.out.println("***************************************"); 
-//         }
-//     }
-    
-//      public static void show_template(String template[][]){
-         
-//         for(int i=0; i < template.length; i++){
-//             for(int j = 0; j < template[i].length; j++){
-//                 if(template[i][j] != null){
-//                     if((j+1) < template[i].length){
-//                         System.out.print(template[i][j] + "|");
-//                     }else{
-//                         System.out.print(template[i][j]);
-//                     }
-//                 }else{
-//                     if((j+1) < template[i].length){
-//                         System.out.print(" |");  
-//                     }else{
-//                         System.out.print(" ");
-//                     }
-//                 }
-//             }
-            
-//             System.out.println("\n-----");
-//         }
-//     }
-    
-// }
+            for (let i = row_winner.column; i < $ITEMS.length; i+=3) {
+                $ITEMS[i].classList.add("border-success"); 
+            }
+
+            break;
+        case "First-diagonal":
+
+            for (let i = 0; i < $ITEMS.length; i+=4) {
+                $ITEMS[i].classList.add("border-success");
+            }
+
+            break;
+        case "Second-diagonal":
+            for (let i = 2; i < $ITEMS.length; i+=2) {
+                $ITEMS[i].classList.add("border-success");
+                if(i == 6) break;
+            }
+            break;
+        default:
+            break;
+    }
+}
