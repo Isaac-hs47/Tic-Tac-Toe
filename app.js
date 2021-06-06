@@ -1,6 +1,6 @@
 class Template{
-    constructor(template = []){
-        this.template = template
+    constructor(){
+        this.template = [];
         this.player = false;
         this.winner = false;
         this.full = false;
@@ -55,7 +55,7 @@ class Template{
     
         //Validate in horizontally
         for (let i = 0; i < this.template[row].length; i++) {
-            if (this.template[row][i] === null) {
+            if (this.template[row][i] === undefined) {
                 break;
             } else if (this.template[row][i] === turn) {
                 count++;
@@ -68,13 +68,14 @@ class Template{
         count = 0;
         //Validate in vertically
         for (let i = 0; i < this.template.length; i++) {
-                if (this.template[i][column] === null) {
+                if (this.template[i][column] === undefined) {
                     break;
                 } else if (this.template[i][column] === turn) {
                     count++;
                 }               
         }
-
+        
+        
         
         this.winner = count === 3;
         if (this.winner) return true;
@@ -84,7 +85,7 @@ class Template{
 
         this.winner = this.verify_diagonals(turn, false);
         if(this.winner) return true;
-
+        
         return false;
     }
     
@@ -92,20 +93,21 @@ class Template{
         let count = 0;
         let isNull = false;
         let aux = increment ? 0 : 2;
-        
-        for(let i = 0; i < this.template.length; i++) {
-            for (let j = aux; j < this.template[i].length; j++) {
-                if (this.template[i][j] === null) {
-                    isNull = true;
+
+        this.template.forEach(item => {
+            for (let i = aux; i < item.length; i++) {
+                if(item[i] === undefined){
                     break;
-                } else if (this.template[i][j] === turn) {
-                    increment ? aux++ : aux--;
+                }else if(item[i] === turn){
                     count++;
+                    increment ? aux++ : aux--;
+                    break;
+                }else{
                     break;
                 }
             }
-            if(isNull) break;
-        } 
+        });
+
         return count === 3;
     }
 
@@ -113,13 +115,22 @@ class Template{
         let count = 0;
         for (let i = 0; i < this.template.length; i++) {
             for (let j = 0; j < this.template[i].length; j++) {
-                if(this.template[i][j] == null){
+                if(this.template[i][j] == undefined){
                     count++;
                 }
             }
         }
         return count === 9;
     }
+
+    create_template(rows, columns){
+        let x = new Array(rows);
+        for (let i = 0; i < rows; i++) {
+            x[i] = new Array(columns);
+        }
+        this.template = x;
+    }
+
     get_player_value(){
         return !this.player ? "X" : "O";
     }
@@ -134,11 +145,10 @@ class Template{
         return this.template;
     }
     reset_template(){
-        let x = new Array(3);
-        for (let i = 0; i < 3; i++) {
+        let x = new Array(this.template.length);
+        for (let i = 0; i < this.template[0].length; i++) {
             x[i] = new Array(3);
         }
-
         this.template = x;
     }
 
@@ -152,11 +162,13 @@ function Matriz(rows,columns) {
     return x;
  }
 
-const MATRIZ = Matriz(3, 3);
+
 const $CONTAINER_WINNER = document.getElementById("winner");
 const $BTN_RESET = document.getElementById("btn-reset");
 
-let template = new Template(MATRIZ);
+let template = new Template();
+
+template.create_template(3,3);
 
 let cell;
 let winner = false, full = false;
@@ -172,8 +184,8 @@ document.addEventListener("click", (e) => {
                 if(template.get_winner()) {
                     winner = true;
                     $BTN_RESET.disabled = false;
-                    $CONTAINER_WINNER.innerHTML += `<strong>WINNER!!!</strong><span> El ganador es "${template.get_player_value()}"</span>`;
-                    $CONTAINER_WINNER.classList.add("show");
+                    $CONTAINER_WINNER.innerHTML = `<strong>WINNER!!!</strong><span> El ganador es "${template.get_player_value()}"</span>`;
+                    $CONTAINER_WINNER.classList.remove("d-none");
                 }
             }else{
                 alert("La celda ya fue seleccionada!");
@@ -189,6 +201,7 @@ document.addEventListener("click", (e) => {
         template.reset_template();
         winner = false;
         $BTN_RESET.disabled = true;
+        $CONTAINER_WINNER.classList.add("d-none");
     }
 });
 
