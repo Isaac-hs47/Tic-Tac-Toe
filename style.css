@@ -12,5 +12,11 @@
     margin: 5px;
     padding: 5px;
     height: 40px;
+    max-width: 33%;
     width: calc(100% / 3 - 20px);
+}
+.title{
+    background-color: #85C1E9 ;
+    padding: 10px;
+    color: white;
 }

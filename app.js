@@ -63,7 +63,10 @@ class Template{
         }
        
         this.winner = count === 3;
-        if (this.winner)  return true;
+        if (this.winner) { 
+            
+            return true;
+        }
         
         count = 0;
         //Validate in vertically
@@ -91,7 +94,6 @@ class Template{
     
     verify_diagonals(turn, increment){
         let count = 0;
-        let isNull = false;
         let aux = increment ? 0 : 2;
 
         this.template.forEach(item => {
@@ -115,7 +117,7 @@ class Template{
         let count = 0;
         for (let i = 0; i < this.template.length; i++) {
             for (let j = 0; j < this.template[i].length; j++) {
-                if(this.template[i][j] == undefined){
+                if(this.template[i][j] !== undefined){
                     count++;
                 }
             }
@@ -137,7 +139,6 @@ class Template{
     get_winner(){
         return this.winner;
     }
-
     get_full(){
         return this.full;
     }
@@ -175,23 +176,31 @@ let winner = false, full = false;
 
 document.addEventListener("click", (e) => {
     if(e.target.matches(".game-item")){
-        if(!winner){  
+
+        if(!winner && !full){  
             let num = e.target.id.split("-");
             let cell = num[1];
 
             if(template.mark_cell(cell)){
                 e.target.innerText = template.get_player_value();
+                console.log(full);
                 if(template.get_winner()) {
                     winner = true;
                     $BTN_RESET.disabled = false;
+                    $CONTAINER_WINNER.classList.add("alert-success");
                     $CONTAINER_WINNER.innerHTML = `<strong>WINNER!!!</strong><span> El ganador es "${template.get_player_value()}"</span>`;
+                    $CONTAINER_WINNER.classList.remove("d-none");
+                }else if(template.get_full()){
+                    full = true;
+                    $BTN_RESET.disabled = false;
+                    $CONTAINER_WINNER.classList.add("alert-warning");
+                    $CONTAINER_WINNER.innerHTML = `<strong>FULL!!!</strong><span> Ya todas la casillas estan marcadas</span>`;
                     $CONTAINER_WINNER.classList.remove("d-none");
                 }
             }else{
                 alert("La celda ya fue seleccionada!");
             }
         } 
-        
     }
 
     if(e.target.matches("#btn-reset")){
@@ -199,8 +208,14 @@ document.addEventListener("click", (e) => {
             item.innerText = null;
         });
         template.reset_template();
+
         winner = false;
+        full = false;
+
         $BTN_RESET.disabled = true;
+
+        $CONTAINER_WINNER.classList.remove("alert-success");
+        $CONTAINER_WINNER.classList.remove("alert-warning");
         $CONTAINER_WINNER.classList.add("d-none");
     }
 });
