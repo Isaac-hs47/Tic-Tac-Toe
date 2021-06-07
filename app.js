@@ -226,7 +226,7 @@ document.addEventListener("click", (e) => {
                 }
             }else{
                 $CONTAINER_MESSAGE.classList.add("alert-danger");
-                $CONTAINER_MESSAGE.innerHTML = `<strong>INVALID!!!</strong><span> These cell already been marked</span>`;
+                $CONTAINER_MESSAGE.innerHTML = `<strong>INVALID!!!</strong><span> That cell already been marked</span>`;
                 $CONTAINER_MESSAGE.classList.remove("d-none");
                 setTimeout(()=>{
                     $CONTAINER_MESSAGE.classList.remove("alert-danger");
