@@ -4,6 +4,8 @@ class Template{
         this.player = false;
         this.winner = false;
         this.full = false;
+        this.wins_x = 0;
+        this.wins_o = 0;
         this.row_winner = {};
     }
 
@@ -65,6 +67,7 @@ class Template{
         
         this.winner = count === 3;
         if (this.winner) { 
+            turn === "X" ? this.wins_x++ : this.wins_o++;
             this.row_winner = {orientation: "horizontal", row: row, column: undefined};
             return true;
         }
@@ -81,18 +84,21 @@ class Template{
         
         this.winner = count === 3;
         if (this.winner) {
+            turn === "X" ? this.wins_x++ : this.wins_o++;
             this.row_winner = {orientation: "vertical", row: undefined, column: column};
             return true
         };
           
         this.winner = this.verify_diagonals(turn, true);
         if(this.winner) {
+            turn === "X" ? this.wins_x++ : this.wins_o++;
             this.row_winner = {orientation: "First-diagonal", row: undefined, column: undefined};
             return true
         };
 
         this.winner = this.verify_diagonals(turn, false);
         if(this.winner) {
+            turn === "X" ? this.wins_x++ : this.wins_o++;
             this.row_winner = {orientation: "Second-diagonal", row: undefined, column: undefined };
             return true
         };
@@ -163,61 +169,79 @@ class Template{
     get_row_winner(){
         return this.row_winner;
     }
+    get_wins(){
+        return {
+            wins_x: this.wins_x,
+            wins_o: this.wins_o
+        };
+    }
+
 
 }
-
-function Matriz(rows,columns) {
-    let x = new Array(rows);
-    for (let i = 0; i < rows; i++) {
-        x[i] = new Array(columns);
-    }
-    return x;
- }
-
-
-const $CONTAINER_WINNER = document.getElementById("winner");
+const $CONTAINER_MESSAGE = document.getElementById("message");
 const $BTN_RESET = document.getElementById("btn-reset");
 
 let template = new Template();
 
 template.create_template(3,3);
 
-let cell;
+let cell, wins;
 let winner = false, full = false;
+
+wins = template.get_wins();
+
+document.getElementById("winsX").innerText = `X: ${wins.wins_x}`;
+document.getElementById("winsO").innerText = `O: ${wins.wins_o}`;
+document.getElementById("turn").innerHTML = `<span>Turn of  <b>O</b></span>`;
 
 document.addEventListener("click", (e) => {
     if(e.target.matches(".game-item")){
 
-        if(!winner && !full){  
+        if(!winner && !full){ 
+            document.getElementById("turn").innerHTML = `<span>Turn of  <b>${template.get_player_value()}</b></span>`; 
             let num = e.target.id.split("-");
             let cell = num[1];
 
             if(template.mark_cell(cell)){
                 e.target.innerText = template.get_player_value();
-                console.log(full);
+
                 if(template.get_winner()) {
+
                     winner = true;
                     painting_cells(template.get_row_winner());
                     $BTN_RESET.disabled = false;
-                    $CONTAINER_WINNER.classList.add("alert-success");
-                    $CONTAINER_WINNER.innerHTML = `<strong>WINNER!!!</strong><span> El ganador es "${template.get_player_value()}"</span>`;
-                    $CONTAINER_WINNER.classList.remove("d-none");
+                    $CONTAINER_MESSAGE.classList.add("alert-success");
+                    $CONTAINER_MESSAGE.innerHTML = `<strong>WINNER!!!</strong><span> The winner is "${template.get_player_value()}"</span>`;
+                    $CONTAINER_MESSAGE.classList.remove("d-none");
+
+                    wins = template.get_wins();
+                   
+
                 }else if(template.get_full()){
                     full = true;
                     $BTN_RESET.disabled = false;
-                    $CONTAINER_WINNER.classList.add("alert-warning");
-                    $CONTAINER_WINNER.innerHTML = `<strong>FULL!!!</strong><span> Ya todas la casillas estan marcadas</span>`;
-                    $CONTAINER_WINNER.classList.remove("d-none");
+                    $CONTAINER_MESSAGE.classList.add("alert-warning");
+                    $CONTAINER_MESSAGE.innerHTML = `<strong>FULL!!!</strong><span> All cells already been marked</span>`;
+                    $CONTAINER_MESSAGE.classList.remove("d-none");
                 }
             }else{
-                alert("La celda ya fue seleccionada!");
+                $CONTAINER_MESSAGE.classList.add("alert-danger");
+                $CONTAINER_MESSAGE.innerHTML = `<strong>INVALID!!!</strong><span> These cell already been marked</span>`;
+                $CONTAINER_MESSAGE.classList.remove("d-none");
+                setTimeout(()=>{
+                    $CONTAINER_MESSAGE.classList.remove("alert-danger");
+                    $CONTAINER_MESSAGE.classList.add("d-none");
+                }, 2000);
             }
+            document.getElementById("winsX").innerText = `X: ${wins.wins_x}`;
+            document.getElementById("winsO").innerText = `O: ${wins.wins_o}`;
         } 
     }
 
     if(e.target.matches("#btn-reset")){
         document.querySelectorAll(".game-item").forEach(item => {
             item.classList.remove("border-success");
+            item.classList.remove("border-3");
             item.innerText = null;
         });
         template.reset_template();
@@ -227,9 +251,9 @@ document.addEventListener("click", (e) => {
 
         $BTN_RESET.disabled = true;
 
-        $CONTAINER_WINNER.classList.remove("alert-success");
-        $CONTAINER_WINNER.classList.remove("alert-warning");
-        $CONTAINER_WINNER.classList.add("d-none");
+        $CONTAINER_MESSAGE.classList.remove("alert-success");
+        $CONTAINER_MESSAGE.classList.remove("alert-warning");
+        $CONTAINER_MESSAGE.classList.add("d-none");
     }
 });
 
@@ -240,22 +264,26 @@ function painting_cells(row_winner = {}){
         case "horizontal":
             if(row_winner.row === 0){
                 for (let i = 0; i < 3; i++) {
-                    $ITEMS[i].classList.add("border-success");                    
+                    $ITEMS[i].classList.add("border-success");
+                    $ITEMS[i].classList.add("border-3");                    
                 }
             }else if(row_winner.row === 1){
                 for (let i = 3; i < 6; i++) {
-                    $ITEMS[i].classList.add("border-success");                    
+                    $ITEMS[i].classList.add("border-success");
+                    $ITEMS[i].classList.add("border-3");                    
                 }
             }else{
                 for (let i = 6; i < 9; i++) {
-                    $ITEMS[i].classList.add("border-success");                    
+                    $ITEMS[i].classList.add("border-success");
+                    $ITEMS[i].classList.add("border-3");
                 }
             }
             break;
         case "vertical":
 
             for (let i = row_winner.column; i < $ITEMS.length; i+=3) {
-                $ITEMS[i].classList.add("border-success"); 
+                $ITEMS[i].classList.add("border-success");
+                $ITEMS[i].classList.add("border-3"); 
             }
 
             break;
@@ -263,12 +291,14 @@ function painting_cells(row_winner = {}){
 
             for (let i = 0; i < $ITEMS.length; i+=4) {
                 $ITEMS[i].classList.add("border-success");
+                $ITEMS[i].classList.add("border-3");
             }
 
             break;
         case "Second-diagonal":
             for (let i = 2; i < $ITEMS.length; i+=2) {
                 $ITEMS[i].classList.add("border-success");
+                $ITEMS[i].classList.add("border-3");
                 if(i == 6) break;
             }
             break;

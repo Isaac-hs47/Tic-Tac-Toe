@@ -16,6 +16,9 @@
                 <h1 class="col-sm-12 text-center">TIC TAC TOE</h1>
             </header>
         </div>
+        <div class="row">
+            <div class="col-7 col-sm-6 col-md-5 col-lg-3 mx-auto text-center text-dark p-2" id="turn"></div>
+        </div>
         <div class="row ">
             <div class="mx-auto game-container col-7 col-sm-6 col-md-5 col-lg-3">
                 <p class="bg-light text-center game-item border rounded fw-bold" id="n-1"></p>
@@ -31,13 +34,24 @@
             
         </div>
         <div class="row">
+            <div class="col-7 col-sm-6 col-md-5 col-lg-3 mt-3 mx-auto d-flex justify-content-center">
+                <div class="text-center px-3">
+                    <p id="winsX"></p>
+                </div>
+                <div class="text-center px-3">
+                    <p id="winsO"></p>
+                </div>
+            </div>
+          
+        </div>
+        <div class="row">
             <div class="col-7 col-sm-6 col-md-5 col-lg-3 d-flex justify-content-center mt-3 mx-auto">
                 <button type="button" class="btn btn-danger w-100" id="btn-reset" disabled>Reset</button>
             </div>
         </div>
         <div class="row">
             <div class="col-7 col-sm-6 col-md-5 col-lg-3 d-flex justify-content-center mt-3 mx-auto">
-                <div class="alert text-center d-none fs-6" role="alert" id="winner"></div>
+                <div class="alert text-center d-none fs-6" role="alert" id="message"></div>
             </div>
         </div>
     </div>
