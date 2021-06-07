@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./img/favicon.png" type="image/x-icon">
     <title>Tic tac toe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
@@ -12,15 +13,15 @@
     
     <div class="container">
         <div class="row">
-            <header class="col-sm-6 col-md-5 col-lg-3 title mb-3 mx-auto">
+            <header class="col-sm-6 col-md-5 col-lg-3 col-xl-2 title mb-3 mx-auto">
                 <h1 class="col-sm-12 text-center">TIC TAC TOE</h1>
             </header>
         </div>
         <div class="row">
-            <div class="col-7 col-sm-6 col-md-5 col-lg-3 mx-auto text-center text-dark p-2" id="turn"></div>
+            <div class="col-7 col-sm-6 col-md-5 col-lg-3 col-xl-2 mx-auto text-center text-dark p-2" id="turn"></div>
         </div>
-        <div class="row ">
-            <div class="mx-auto game-container col-7 col-sm-6 col-md-5 col-lg-3">
+        <div class="row">
+            <div class="mx-auto game-container col-7 col-sm-6 col-md-5 col-lg-3 col-xl-2">
                 <p class="bg-light text-center game-item border rounded fw-bold" id="n-1"></p>
                 <p class="bg-light text-center game-item border rounded fw-bold" id="n-2"></p>
                 <p class="bg-light text-center game-item border rounded fw-bold" id="n-3"></p>
@@ -34,7 +35,7 @@
             
         </div>
         <div class="row">
-            <div class="col-7 col-sm-6 col-md-5 col-lg-3 mt-3 mx-auto d-flex justify-content-center">
+            <div class="col-7 col-sm-6 col-md-5 col-lg-3 col-xl-2 mt-3 mx-auto d-flex justify-content-center">
                 <div class="text-center px-3">
                     <p id="winsX"></p>
                 </div>
@@ -45,12 +46,12 @@
           
         </div>
         <div class="row">
-            <div class="col-7 col-sm-6 col-md-5 col-lg-3 d-flex justify-content-center mt-3 mx-auto">
+            <div class="col-7 col-sm-6 col-md-5 col-lg-3 col-xl-2 d-flex justify-content-center mt-3 mx-auto">
                 <button type="button" class="btn btn-danger w-100" id="btn-reset" disabled>Reset</button>
             </div>
         </div>
         <div class="row">
-            <div class="col-7 col-sm-6 col-md-5 col-lg-3 d-flex justify-content-center mt-3 mx-auto">
+            <div class="col-7 col-sm-6 col-md-5 col-lg-3 col-xl-2 d-flex justify-content-center mt-3 mx-auto">
                 <div class="alert text-center d-none fs-6" role="alert" id="message"></div>
             </div>
         </div>

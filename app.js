@@ -19,7 +19,7 @@ class Template{
             
             this.template[0][cell] = turn;
             this.has_winner(0, cell, turn);
-
+            
         }else if(cell >= 3 && cell <= 5){
             cell -= 3;
         
@@ -36,13 +36,10 @@ class Template{
             this.has_winner(2, cell, turn);
 
         }else{
-            alert("La casilla elegida no existe!!!");
             return false;
         }
 
         this.full = this.isEmpty();
-        this.player = !this.player;
-        
         return true;
     }
 
@@ -146,14 +143,16 @@ class Template{
         }
         this.template = x;
     }
-
-    get_player_value(){
-        return !this.player ? "X" : "O";
+    change_player(){
+        this.player = !this.player;
+    }
+    get_turn(){
+        return this.player ? "X" : "O";
     }
     get_winner(){
         return this.winner;
     }
-    get_full(){
+    isFull(){
         return this.full;
     }
     get_template(){
@@ -177,6 +176,7 @@ class Template{
     }
 
 
+
 }
 const $CONTAINER_MESSAGE = document.getElementById("message");
 const $BTN_RESET = document.getElementById("btn-reset");
@@ -196,14 +196,16 @@ document.getElementById("turn").innerHTML = `<span>Turn of  <b>O</b></span>`;
 
 document.addEventListener("click", (e) => {
     if(e.target.matches(".game-item")){
-
         if(!winner && !full){ 
-            document.getElementById("turn").innerHTML = `<span>Turn of  <b>${template.get_player_value()}</b></span>`; 
             let num = e.target.id.split("-");
             let cell = num[1];
+            
+          
+            
 
             if(template.mark_cell(cell)){
-                e.target.innerText = template.get_player_value();
+                
+                e.target.innerText = template.get_turn();
 
                 if(template.get_winner()) {
 
@@ -211,19 +213,21 @@ document.addEventListener("click", (e) => {
                     painting_cells(template.get_row_winner());
                     $BTN_RESET.disabled = false;
                     $CONTAINER_MESSAGE.classList.add("alert-success");
-                    $CONTAINER_MESSAGE.innerHTML = `<strong>WINNER!!!</strong><span> The winner is "${template.get_player_value()}"</span>`;
+                    $CONTAINER_MESSAGE.innerHTML = `<strong>WINNER!!!</strong><span> The winner is "${template.get_turn()}"</span>`;
                     $CONTAINER_MESSAGE.classList.remove("d-none");
 
                     wins = template.get_wins();
-                   
+                    
 
-                }else if(template.get_full()){
+                }else if(template.isFull()){
                     full = true;
                     $BTN_RESET.disabled = false;
                     $CONTAINER_MESSAGE.classList.add("alert-warning");
                     $CONTAINER_MESSAGE.innerHTML = `<strong>FULL!!!</strong><span> All cells already been marked</span>`;
                     $CONTAINER_MESSAGE.classList.remove("d-none");
                 }
+                template.change_player();
+
             }else{
                 $CONTAINER_MESSAGE.classList.add("alert-danger");
                 $CONTAINER_MESSAGE.innerHTML = `<strong>INVALID!!!</strong><span> That cell already been marked</span>`;
@@ -233,8 +237,13 @@ document.addEventListener("click", (e) => {
                     $CONTAINER_MESSAGE.classList.add("d-none");
                 }, 2000);
             }
+
+          
+            
             document.getElementById("winsX").innerText = `X: ${wins.wins_x}`;
             document.getElementById("winsO").innerText = `O: ${wins.wins_o}`;
+            document.getElementById("turn").innerHTML = `<span>Turn of  <b>${template.get_turn()}</b></span>`;
+           
         } 
     }
 
