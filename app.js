@@ -143,21 +143,27 @@ class Template{
         }
         this.template = x;
     }
+
     change_player(){
         this.player = !this.player;
     }
+
     get_turn(){
         return this.player ? "X" : "O";
     }
+
     get_winner(){
         return this.winner;
     }
+
     isFull(){
         return this.full;
     }
+
     get_template(){
         return this.template;
     }
+
     reset_template(){
         let x = new Array(this.template.length);
         for (let i = 0; i < this.template[0].length; i++) {
@@ -165,9 +171,11 @@ class Template{
         }
         this.template = x;
     }
+    
     get_row_winner(){
         return this.row_winner;
     }
+    
     get_wins(){
         return {
             wins_x: this.wins_x,
@@ -271,22 +279,11 @@ function painting_cells(row_winner = {}){
   
     switch(row_winner.orientation){
         case "horizontal":
-            if(row_winner.row === 0){
-                for (let i = 0; i < 3; i++) {
-                    $ITEMS[i].classList.add("border-success");
-                    $ITEMS[i].classList.add("border-3");                    
-                }
-            }else if(row_winner.row === 1){
-                for (let i = 3; i < 6; i++) {
-                    $ITEMS[i].classList.add("border-success");
-                    $ITEMS[i].classList.add("border-3");                    
-                }
-            }else{
-                for (let i = 6; i < 9; i++) {
-                    $ITEMS[i].classList.add("border-success");
-                    $ITEMS[i].classList.add("border-3");
-                }
-            }
+            let j = (row_winner.row + 1) * 3;
+            for (let i = (j-3) ; i < j; i++) {
+                $ITEMS[i].classList.add("border-success");
+                $ITEMS[i].classList.add("border-3");                    
+            }        
             break;
         case "vertical":
 
